@@ -19,16 +19,6 @@ JimmyWang0417 的 NUR 仓库。nixpkgs 固定在 `github:NixOS/nixpkgs/nixos-26.
 | `whitesur-kde` | 0-unstable-2024-10-12 | [vinceliuice/WhiteSur-kde](https://github.com/vinceliuice/WhiteSur-kde) 壁纸 `eb7b054b1c7c3429965e3b531de2db38e2c83aec`，装饰 `36dfbd08b1cdd408c61c986b900b3b45fc98776d` | 壁纸是浅色与深色 `3840x2160.png`。装饰是 `aurorae/WhiteSur/`。没有 AUR 包 | 可以，`pkgs.whitesur-kde`。每日 `github-rev` 更新也在本仓库，两对 rev 都跟着默认分支 HEAD |
 | `tela-icon-theme` | 0-unstable-2026-08-10 | [vinceliuice/Tela-icon-theme](https://github.com/vinceliuice/Tela-icon-theme) `a1fffc5bfab716bd022dd228ee96fe3965cdb33d` | 只装标准色、目录名 `Tela`。不装 `Tela-dark` / `Tela-light`，也不改色 | 可以，`pkgs.tela-icon-theme`。每日 `github-rev` 更新也在本仓库 |
 
-## 未打包
-
-- `alder`、`grok-bot`：按要求不收录。
-- 宿主机 EasyConnect 客户端（官方 deb）：按要求不收录。`docker-easyconnect` 是 nixos-config 里的服务，不是本仓库的包。
-- `udf-http-range-proxy`、`keepassxc-unlock`、`verilog-format`：按要求不收录。
-- `typora-free-with-plugin`、`typora-crack`、`typora-unlock`：破解或补丁包，不收录。官方 Typora deb 没有打进仓库。
-- `anaconda`：官方安装器约 1.0 GiB，现成写法会装进 `~/.conda`，不是 Nix store 前缀。
-- `huaweicloud-meeting`：官方 URL 当前返回 arm64 8.11.1，不是 x86_64。AUR 使用的是镜像站地址。
-- `zju-connect`、`docker-easyconnect`、`aTrust`：不收录。
-
 ```bash
 nix --extra-experimental-features 'nix-command flakes' build --no-link .#animeko
 ```
