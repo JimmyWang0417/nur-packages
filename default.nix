@@ -9,6 +9,7 @@
   endeavouros-wallpapers = pkgs.callPackage ./pkgs/endeavouros-wallpapers { };
   grub-theme-dedsec = pkgs.callPackage ./pkgs/grub-theme-dedsec { };
   tela-icon-theme = pkgs.callPackage ./pkgs/tela-icon-theme { };
+  typora = pkgs.callPackage ./pkgs/typora { };
   whitesur-kde = pkgs.callPackage ./pkgs/whitesur-kde { };
   xjtu-course-genius = pkgs.callPackage ./pkgs/xjtu-course-genius { };
   xjtutoolbox = pkgs.callPackage ./pkgs/xjtutoolbox { };

@@ -4,7 +4,7 @@ JimmyWang0417 的 NUR 仓库。nixpkgs 固定在 `github:NixOS/nixpkgs/nixos-26.
 
 主题包和每日更新都在本仓库。调用方只引用输出。
 
-`nixpkgs.config.allowUnfree` 必须为真，否则 `xjtu-course-genius` 在求值时会被 nixpkgs 拒绝。
+`nixpkgs.config.allowUnfree` 必须为真，否则 `xjtu-course-genius`、`typora` 在求值时会被 nixpkgs 拒绝。
 
 ## 已打包
 
@@ -22,7 +22,9 @@ JimmyWang0417 的 NUR 仓库。nixpkgs 固定在 `github:NixOS/nixpkgs/nixos-26.
 | `endeavouros-wallpapers` | 0-unstable-2026-07-21 | [endeavouros-team/Branding](https://github.com/endeavouros-team/Branding) `b0b0b3453216d2e1daacd0dd20ecdbe697ae098a` | 装当前官方默认壁纸和浅色壁纸到 `share/wallpapers`。没有 AUR 包 | 可以，`pkgs.endeavouros-wallpapers`。每日 `github-rev` 更新也在本仓库 |
 | `endeavouros-community-wallpapers` | 0-unstable-2026-11-16 | [EndeavourOS-Community-Editions/Community-wallpapers](https://github.com/EndeavourOS-Community-Editions/Community-wallpapers) `358c0cee2f628c3c582c5a4e531b9ef2c79abc77` | 装 classic 与 community 目录里的壁纸到 `share/wallpapers`。没有 AUR 包 | 可以，`pkgs.endeavouros-community-wallpapers`。每日 `github-rev` 更新也在本仓库 |
 | `tela-icon-theme` | 0-unstable-2026-08-10 | [vinceliuice/Tela-icon-theme](https://github.com/vinceliuice/Tela-icon-theme) `a1fffc5bfab716bd022dd228ee96fe3965cdb33d` | 只装标准色、目录名 `Tela`。不装 `Tela-dark` / `Tela-light`，也不改色 | 可以，`pkgs.tela-icon-theme`。每日 `github-rev` 更新也在本仓库 |
+| `typora` | 0.11.18 + 插件 1.19.16 | [AUR typora-free-with-plugin](https://aur.archlinux.org/packages/typora-free-with-plugin)；固定 GitHub release | 免费 beta 搭配插件；用户配置保存在 home；保留来源、插件和启动参数覆盖接口；接入构建、GUI 检查和每周插件更新。详见 [Typora 文档](docs/typora.md) | 可以，需要 `allowUnfree` |
 
 ```bash
 nix --extra-experimental-features 'nix-command flakes' build --no-link .#animeko
+nix --extra-experimental-features 'nix-command flakes' build --no-link .#typora
 ```

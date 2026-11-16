@@ -3,6 +3,14 @@
 # A package is updated only when it appears here.
 [
   {
+    attribute = "typora";
+    file = "pkgs/typora/sources.nix";
+    owner = "obgnail";
+    repo = "typora_plugin";
+    kind = "typora-plugin";
+    asset = "typora-plugin@v{version}.zip";
+  }
+  {
     attribute = "animeko";
     file = "pkgs/animeko/default.nix";
     owner = "open-ani";

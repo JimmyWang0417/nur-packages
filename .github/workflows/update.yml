@@ -25,6 +25,12 @@ jobs:
         env:
           UPDATE_KINDS: ${{ github.event.schedule == '0 16 * * *' && 'github-rev' || '' }}
         run: python3 ./scripts/update.py
+      - name: Validate changed Typora plugin before opening a PR
+        run: |
+          if ! git diff --quiet -- pkgs/typora/sources.nix; then
+            nix --extra-experimental-features 'nix-command flakes' build --no-link --print-out-paths \
+              .#typora .#typora.tests.layout .#typora.tests.runtime .#typora.tests.gui
+          fi
       - name: Open a pull request
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

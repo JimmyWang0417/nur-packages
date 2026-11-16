@@ -19,6 +19,12 @@ Inputs:
     Cargo.lock beside the nix file is regenerated with cargo generate-lockfile
     on that tag. This is how crm opts in. There is no separate cargoHash line.
 
+  kind = "typora-plugin":
+    update only pluginVersion and the plugin source block in sources.nix.
+    Preserve the actual release tag (with or without v), require the matching
+    release asset, and leave the historical Typora editor and architecture
+    hashes pinned. CI validates the updated package before opening the PR.
+
   kind = "github-rev":
     latest commit on the default branch. When that SHA differs from any
     `rev`, every rev and every sha256 hash in the file are rewritten to
@@ -71,7 +77,7 @@ def load_updates():
     return json.loads(raw)
 
 
-def latest_version(owner: str, repo: str) -> str:
+def latest_release(owner: str, repo: str) -> dict:
     url = f"https://api.github.com/repos/{owner}/{repo}/releases/latest"
     req = urllib.request.Request(
         url,
@@ -81,7 +87,11 @@ def latest_version(owner: str, repo: str) -> str:
         },
     )
     with urllib.request.urlopen(req) as resp:
-        tag = json.load(resp)["tag_name"]
+        return json.load(resp)
+
+
+def latest_version(owner: str, repo: str) -> str:
+    tag = latest_release(owner, repo)["tag_name"]
     return tag[1:] if tag.startswith("v") else tag
 
 
@@ -243,6 +253,48 @@ def update_rev(item: dict) -> bool:
     return True
 
 
+def update_typora_plugin(item: dict) -> bool:
+    """Update only the plugin release; the historical free editor stays pinned."""
+    path = ROOT / item["file"]
+    text = path.read_text()
+    versions = re.findall(r'pluginVersion = "([^"]+)";', text)
+    blocks = list(re.finditer(r'(?ms)^  plugin = \{\n.*?^  \};', text))
+    if len(versions) != 1 or len(blocks) != 1:
+        raise SystemExit("expected one pluginVersion and one plugin source block")
+
+    release = latest_release(item["owner"], item["repo"])
+    tag = release["tag_name"]
+    if not re.fullmatch(r"v?\d+\.\d+\.\d+", tag):
+        raise SystemExit(f"unexpected Typora plugin release tag: {tag}")
+    version = tag.removeprefix("v")
+    print(f"{item['attribute']} plugin: {versions[0]} -> {version}")
+    if version == versions[0]:
+        return False
+
+    asset = item["asset"].replace("{version}", version)
+    if not any(entry["name"] == asset for entry in release["assets"]):
+        raise SystemExit(f"Typora plugin release {tag} has no {asset}")
+    url = (f"https://github.com/{item['owner']}/{item['repo']}"
+           f"/releases/download/{tag}/{asset}")
+    sri = prefetch_url(url)
+    if not re.fullmatch(r"sha256-[A-Za-z0-9+/]{43}=", sri):
+        raise SystemExit("unexpected SHA-256 hash from prefetch-file")
+    match = blocks[0]
+    block = match.group()
+    for pattern, value, label in [
+        (r'url = "[^"]+";', f'url = "{url}";', "plugin URL"),
+        (r'hash = "sha256-[^"]+";', f'hash = "{sri}";', "plugin hash"),
+    ]:
+        block, count = re.subn(pattern, lambda _: value, block)
+        if count != 1:
+            raise SystemExit(f"expected one {label}, found {count}")
+    text = text[:match.start()] + block + text[match.end():]
+    text = re.sub(r'pluginVersion = "[^"]+";',
+                  f'pluginVersion = "{version}";', text)
+    path.write_text(text)
+    return True
+
+
 def main() -> None:
     changed = False
     allowed = {
@@ -258,6 +310,8 @@ def main() -> None:
             changed = update_asset(item) or changed
         elif kind == "github-source":
             changed = update_source(item) or changed
+        elif kind == "typora-plugin":
+            changed = update_typora_plugin(item) or changed
         elif kind == "github-rev":
             changed = update_rev(item) or changed
         else:
