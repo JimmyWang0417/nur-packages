@@ -25,6 +25,7 @@
   desktop-file-utils,
   xorg-server,
   xwininfo,
+  dejavu_fonts,
   sources ? import ./sources.nix,
   typoraSrc ? fetchurl (
     sources.typora.${stdenv.hostPlatform.system}
@@ -130,6 +131,7 @@ stdenv.mkDerivation (finalAttrs: {
         desktop-file-utils
         xorg-server
         xwininfo
+        dejavu_fonts
         ;
       package = finalAttrs.finalPackage;
     };

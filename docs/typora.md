@@ -142,7 +142,7 @@ pkgs.typora.override {
 - `typora.sources`：固定来源元数据。
 - `typora.tests.layout`：检查安装路径、桌面入口、图标、插件注入与 updater 默认配置的 derivation。
 - `typora.tests.runtime`：利用 Electron 的 Node 模式检查实际启动器的 derivation，覆盖参数边界、配置初始化、保留原配置、软链接及错误路径。
-- `typora.tests.gui`：在虚拟 X 显示中创建实际窗口，并检查插件加载结果；要求启用插件数大于零、错误数为零。测试显式传入 `--no-sandbox --disable-gpu`，这些是测试环境参数，不是包默认参数。
+- `typora.tests.gui`：在虚拟 X 显示中创建实际窗口，并检查插件加载结果；要求启用插件数大于零、错误数为零。测试显式传入 `--no-sandbox --disable-gpu`，这些是测试环境参数，不是包默认参数。检查显式提供 DejaVu 字体和临时 fontconfig 配置，不依赖宿主机的字体安装。
 
 本仓库 Flake 导出 `packages.x86_64-linux.typora`，`nix run .#typora` 根据 `meta.mainProgram = "typora"` 选择命令，不需要额外的 `apps` 输出。
 

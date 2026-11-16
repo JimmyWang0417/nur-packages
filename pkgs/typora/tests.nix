@@ -4,6 +4,7 @@
   desktop-file-utils,
   xorg-server,
   xwininfo,
+  dejavu_fonts,
   package,
 }:
 {
@@ -46,7 +47,7 @@
         ];
       }
       ''
-        python3 ${./gui-test.py} ${package}/bin/typora
+        python3 ${./gui-test.py} ${package}/bin/typora ${dejavu_fonts}/share/fonts
         touch "$out"
       '';
 }

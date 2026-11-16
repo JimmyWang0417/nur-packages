@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from xml.sax.saxutils import escape
 
 
 def stop(process):
@@ -29,6 +30,13 @@ with tempfile.TemporaryDirectory(prefix="typora-gui-") as temp:
     runtime.mkdir(mode=0o700)
     document = home / "nix-gui-check.md"
     document.write_text("# Nix GUI check\n\nTypora plugin loading.\n")
+    # Nix builders do not have the host's /etc/fonts or installed fonts.
+    font_config = home / "fonts.conf"
+    font_config.write_text(
+        '<?xml version="1.0"?><fontconfig><dir>' + escape(sys.argv[2])
+        + '</dir><cachedir>' + escape(str(home / "fontcache"))
+        + '</cachedir></fontconfig>'
+    )
     log_path = home / "typora.log"
     read_fd, write_fd = os.pipe()
     xvfb = subprocess.Popen(
@@ -45,7 +53,8 @@ with tempfile.TemporaryDirectory(prefix="typora-gui-") as temp:
         finally:
             os.close(read_fd)
         env = {**os.environ, "HOME": str(home), "DISPLAY": ":" + display,
-               "XDG_RUNTIME_DIR": str(runtime), "ELECTRON_ENABLE_LOGGING": "1"}
+               "XDG_RUNTIME_DIR": str(runtime), "ELECTRON_ENABLE_LOGGING": "1",
+               "FONTCONFIG_FILE": str(font_config), "FONTCONFIG_PATH": str(home)}
         env.pop("ELECTRON_RUN_AS_NODE", None)
         with log_path.open("w") as log:
             # The build environment cannot provide Chromium's user sandbox.
@@ -57,7 +66,9 @@ with tempfile.TemporaryDirectory(prefix="typora-gui-") as temp:
             try:
                 deadline = time.monotonic() + 45
                 while time.monotonic() < deadline:
-                    assert process.poll() is None, "Typora exited before initialization"
+                    assert process.poll() is None, (
+                        f"Typora exited before initialization (status {process.returncode})"
+                    )
                     content = re.sub(r"\x1b\[[0-9;]*m", "", log_path.read_text())
                     tree = subprocess.run(
                         ["xwininfo", "-root", "-tree"], env=env,
