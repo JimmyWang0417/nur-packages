@@ -58,4 +58,37 @@
     kind = "github-rev";
     asset = "";
   }
+  {
+    attribute = "whitesur-kde";
+    file = "pkgs/whitesur-kde/default.nix";
+    owner = "vinceliuice";
+    repo = "WhiteSur-kde";
+    kind = "github-rev";
+    asset = "";
+  }
+
+  {
+    attribute = "breath-wallpapers";
+    file = "pkgs/breath-wallpapers/default.nix";
+    owner = "manjaro-contrib";
+    repo = "artwork-themes-breath";
+    kind = "github-rev";
+    asset = "";
+  }
+  {
+    attribute = "endeavouros-wallpapers";
+    file = "pkgs/endeavouros-wallpapers/default.nix";
+    owner = "endeavouros-team";
+    repo = "Branding";
+    kind = "github-rev";
+    asset = "";
+  }
+  {
+    attribute = "endeavouros-community-wallpapers";
+    file = "pkgs/endeavouros-community-wallpapers/default.nix";
+    owner = "EndeavourOS-Community-Editions";
+    repo = "Community-wallpapers";
+    kind = "github-rev";
+    asset = "";
+  }
 ]

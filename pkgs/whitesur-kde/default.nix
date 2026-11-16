@@ -3,28 +3,18 @@
   stdenvNoCC,
   fetchFromGitHub,
 }:
-let
-  # 壁纸和边框是两次不同提交，不跟默认分支一起更新.
-  # The paths below follow whichever layout that revision has.
-  wallpaper = fetchFromGitHub {
-    owner = "vinceliuice";
-    repo = "WhiteSur-kde";
-    # Live light and dark 3840x2160 PNGs. Committer date 2024-10-12.
-    rev = "eb7b054b1c7c3429965e3b531de2db38e2c83aec";
-    hash = "sha256-KBhvsfXLICBwCOL03FHc8Z7gT6hKRL+Dzi1w3ufJFtI=";
-  };
-  decoration = fetchFromGitHub {
-    owner = "vinceliuice";
-    repo = "WhiteSur-kde";
-    # Live Aurorae theme, including decoration.svg and WhiteSurrc.
-    # Committer date 2022-06-25. The theme directory is aurorae/WhiteSur/.
-    rev = "36dfbd08b1cdd408c61c986b900b3b45fc98776d";
-    hash = "sha256-AzHuJrOwlnpjXE00PqcwHbSVXsZhtFXpVJbpq26hSMU=";
-  };
-in
 stdenvNoCC.mkDerivation {
   pname = "whitesur-kde";
-  version = "0-unstable-2024-10-12";
+  version = "0-unstable-2026-08-07";
+
+  # Wallpaper and Aurorae decoration come from one default-branch checkout.
+  # The daily github-rev updater rewrites this single rev and hash together.
+  src = fetchFromGitHub {
+    owner = "vinceliuice";
+    repo = "WhiteSur-kde";
+    rev = "cf4df59ce91004f7ea39358b1b8ff917d5c329f7";
+    hash = "sha256-Fi2zffRhTPd07jTe3YgGkgFK4wjPv+Vq0iljWxLQDBU=";
+  };
 
   dontUnpack = true;
   dontConfigure = true;
@@ -34,15 +24,15 @@ stdenvNoCC.mkDerivation {
     runHook preInstall
     theme="$out/share/aurorae/themes/WhiteSur"
     mkdir -p "$theme" "$out/share/wallpapers"
-    if [[ -d "${decoration}/aurorae/WhiteSur" ]]; then
-      cp -a "${decoration}/aurorae/WhiteSur/." "$theme/"
+    if [[ -d "''${src}/aurorae/WhiteSur" ]]; then
+      cp -a "''${src}/aurorae/WhiteSur/." "$theme/"
     else
-      cp "${decoration}/aurorae/main/WhiteSur/decoration.svg" "$theme/decoration.svg"
-      cp "${decoration}/aurorae/common/assets/"*.svg "$theme/"
-      cp "${decoration}/aurorae/metadata.desktop" "${decoration}/aurorae/metadata.json" "$theme/"
-      cp "${decoration}/aurorae/main/WhiteSurrc" "$theme/WhiteSurrc"
+      cp "''${src}/aurorae/main/WhiteSur/decoration.svg" "$theme/decoration.svg"
+      cp "''${src}/aurorae/common/assets/"*.svg "$theme/"
+      cp "''${src}/aurorae/metadata.desktop" "''${src}/aurorae/metadata.json" "$theme/"
+      cp "''${src}/aurorae/main/WhiteSurrc" "$theme/WhiteSurrc"
     fi
-    cp -a "${wallpaper}/wallpaper/WhiteSur" "$out/share/wallpapers/WhiteSur"
+    cp -a "''${src}/wallpaper/WhiteSur" "$out/share/wallpapers/WhiteSur"
     runHook postInstall
   '';
 
