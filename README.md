@@ -11,7 +11,7 @@ JimmyWang0417 的 NUR 仓库。nixpkgs 固定在 `github:NixOS/nixpkgs/nixos-26.
 | 属性 | 版本 | 来源 | 相对 AUR 改了什么 | 能否被 nixos-config 引用 |
 | --- | --- | --- | --- | --- |
 | `crm` | 0.2.2 | [AUR crm](https://aur.archlinux.org/packages/crm)，上游 [wtklbm/crm](https://github.com/wtklbm/crm) | AUR 构建时 `cargo update -w`。这里用 `buildRustPackage` 和提交的 `Cargo.lock` | 可以，`pkgs.crm` |
-| `animeko` | 6.4.0 | 官方 AppImage。写法来自 [Hobr/my-nix](https://github.com/Hobr/my-nix/blob/84157405e310f2b6c9b35d719acfba74c4cd04e7/nix/packages/animeko.nix)。AUR 是 [animeko-appimage](https://aur.archlinux.org/packages/animeko-appimage) | 保留 AppImage/`wrapType2`，安装 desktop 和 icon。不把 Hobr 的整份 flake 加为 input | 可以，`pkgs.animeko` |
+| `animeko` | 6.4.0 | [open-ani/animeko](https://github.com/open-ani/animeko/releases/tag/v6.4.0) v6.4.0 官方 AppImage | 不采用 AUR `animeko-appimage` 的 PKGBUILD。`fetchurl` 固定哈希，`wrapType2` 提供 `animeko`，桌面项用 `makeDesktopItem`，图标取自 AppImage | 可以，`pkgs.animeko` |
 | `botmux` | 3.59.15 | [deepcoldy/botmux](https://github.com/deepcoldy/botmux/releases/tag/v3.59.15) | `fetchurl` 安装官方 ELF，并把 `tmux` 放进 `PATH` | 可以，`pkgs.botmux` |
 | `xjtutoolbox` | 1.4.1 | [yan-xiaoo/XJTUToolBox](https://github.com/yan-xiaoo/XJTUToolBox/releases/tag/v1.4.1) 的 AppImage | 不再拆 AUR 用的 pacman `.pkg.tar.zst` | 可以，`pkgs.xjtutoolbox` |
 | `xjtu-course-genius` | 4.6.1 | [Hz162/XJTU-Course-Genius](https://github.com/Hz162/XJTU-Course-Genius/releases/tag/v4.6.1) 的 deb | AUR 仓库是空的，直接取 GitHub release | 可以，需要 `allowUnfree` |

@@ -2,6 +2,7 @@
   appimageTools,
   fetchurl,
   lib,
+  makeDesktopItem,
 }:
 let
   pname = "animeko";
@@ -10,22 +11,27 @@ let
     url = "https://github.com/open-ani/animeko/releases/download/v${version}/ani-${version}-linux-x86_64.appimage";
     hash = "sha256-VnnqjYaiOIPgIhVs8+7F4FrvRZ8ld89xDlp2b2QQTyc=";
   };
-  contents = appimageTools.extract {
-    inherit pname version src;
+  contents = appimageTools.extract { inherit pname version src; };
+  desktopItem = makeDesktopItem {
+    name = "animeko";
+    desktopName = "Animeko";
+    comment = "集找番、追番、看番的一站式弹幕追番平台";
+    exec = "animeko";
+    icon = "animeko";
+    terminal = false;
+    categories = [
+      "AudioVideo"
+      "Player"
+      "Video"
+    ];
   };
 in
 appimageTools.wrapType2 {
   inherit pname version src;
 
   extraInstallCommands = ''
+    install -Dm644 ${desktopItem}/share/applications/animeko.desktop $out/share/applications/animeko.desktop
     install -Dm644 ${contents}/icon.png $out/share/icons/hicolor/512x512/apps/animeko.png
-    install -Dm644 ${contents}/animeko.desktop $out/share/applications/animeko.desktop
-    substituteInPlace $out/share/applications/animeko.desktop \
-      --replace-fail 'Exec=Ani' 'Exec=animeko' \
-      --replace-fail 'Icon=icon' 'Icon=animeko'
-    if [ ! -e "$out/bin/animeko" ]; then
-      ln -s "$out/bin/animeko-${version}" "$out/bin/animeko"
-    fi
   '';
 
   meta = {
