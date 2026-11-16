@@ -20,12 +20,14 @@ Inputs:
     on that tag. This is how crm opts in. There is no separate cargoHash line.
 
   kind = "github-rev":
-    latest commit on the default branch. When that SHA differs from `rev`,
-    rev and hash are rewritten. The hash comes from
+    latest commit on the default branch. When that SHA differs from any
+    `rev`, every rev and every sha256 hash in the file are rewritten to
+    that commit. The hash comes from
     `nix flake prefetch github:<owner>/<repo>/<rev>`, which matches
     fetchFromGitHub. A version of the form 0-unstable-YYYY-MM-DD is set
-    from the committer date. The hash already in the file is left alone
-    until that rewrite.
+    from the committer date. Hashes already in the file are left alone
+    until that rewrite. whitesur-kde has two fetches of WhiteSur-kde;
+    both follow this rule.
 
   UPDATE_KINDS, if set, is a comma-separated subset of kinds to process.
   The daily cron sets it to github-rev. An empty value updates every entry.
@@ -91,11 +93,8 @@ def current_version(text: str) -> str:
     return match.group(1)
 
 
-def current_rev(text: str) -> str:
-    match = re.search(r'rev = "([0-9a-fA-F]+)";', text)
-    if not match:
-        raise SystemExit("rev assignment not found")
-    return match.group(1)
+def current_revs(text: str) -> list[str]:
+    return re.findall(r'rev = "([0-9a-fA-F]+)";', text)
 
 
 def latest_commit(owner: str, repo: str) -> tuple[str, str]:
@@ -219,14 +218,20 @@ def update_source(item: dict) -> bool:
 def update_rev(item: dict) -> bool:
     path = ROOT / item["file"]
     text = path.read_text()
-    current = current_rev(text)
+    current = current_revs(text)
+    if not current:
+        raise SystemExit("rev assignment not found")
     rev, day = latest_commit(item["owner"], item["repo"])
-    print(f"{item['attribute']}: {current} -> {rev}")
-    if rev == current:
+    print(f"{item['attribute']}: {', '.join(current)} -> {rev}")
+    if all(item_rev == rev for item_rev in current):
         return False
     sri = prefetch_github_ref(item["owner"], item["repo"], rev)
-    text = replace_once(text, r'rev = "[0-9a-fA-F]+";', f'rev = "{rev}";', "rev")
-    text = replace_once(text, r'hash = "sha256-[^"]+";', f'hash = "{sri}";', "hash")
+    text, rev_count = re.subn(r'rev = "[0-9a-fA-F]+";', f'rev = "{rev}";', text)
+    text, hash_count = re.subn(r'hash = "sha256-[^"]+";', f'hash = "{sri}";', text)
+    if rev_count < 1 or hash_count != rev_count:
+        raise SystemExit(
+            f"expected matching rev and hash assignments, found {rev_count} rev and {hash_count} hash"
+        )
     version_pattern = r'version = "0-unstable-\d{4}-\d{2}-\d{2}";'
     if re.search(version_pattern, text):
         text = replace_once(

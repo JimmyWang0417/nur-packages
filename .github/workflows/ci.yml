@@ -18,3 +18,5 @@ jobs:
           attrs=$(nix --extra-experimental-features 'nix-command flakes' eval --raw .#packages.x86_64-linux --apply 'attrs: builtins.concatStringsSep " " (map (name: ".#${name}") (builtins.attrNames attrs))')
           echo "building $attrs"
           nix --extra-experimental-features 'nix-command flakes' build --no-link --print-out-paths $attrs
+      - name: Test github-rev update handling
+        run: python3 -m unittest discover -s scripts -p 'test_update_rev.py' -v
