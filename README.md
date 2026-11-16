@@ -2,6 +2,8 @@
 
 JimmyWang0417 的 NUR 仓库。nixpkgs 固定在 `github:NixOS/nixpkgs/nixos-26.05`。完整调用约定在 [docs/接口.md](docs/接口.md)。
 
+主题包和每日更新在 nur-packages，nixos-config 只引用。
+
 `nixpkgs.config.allowUnfree` 必须为真，否则 `easyconnect`、`grok-bot`、`xjtu-course-genius` 在求值时会被 nixpkgs 拒绝。
 
 ## 已打包
@@ -16,6 +18,7 @@ JimmyWang0417 的 NUR 仓库。nixpkgs 固定在 `github:NixOS/nixpkgs/nixos-26.
 | `botmux` | 3.59.15 | [deepcoldy/botmux](https://github.com/deepcoldy/botmux/releases/tag/v3.59.15) | `fetchurl` 安装官方 ELF，并把 `tmux` 放进 `PATH` | 可以，`pkgs.botmux` |
 | `xjtutoolbox` | 1.4.1 | [yan-xiaoo/XJTUToolBox](https://github.com/yan-xiaoo/XJTUToolBox/releases/tag/v1.4.1) 的 AppImage | 不再拆 AUR 用的 pacman `.pkg.tar.zst` | 可以，`pkgs.xjtutoolbox` |
 | `xjtu-course-genius` | 4.6.1 | [Hz162/XJTU-Course-Genius](https://github.com/Hz162/XJTU-Course-Genius/releases/tag/v4.6.1) 的 deb | AUR 仓库是空的，直接取 GitHub release | 可以，需要 `allowUnfree` |
+| `grub-theme-dedsec` | 0-unstable-2025-10-24 | [VandalByte/dedsec-grub2-theme](https://github.com/VandalByte/dedsec-grub2-theme) `bbfe078386545688727f44897a7fede8af2c6dda` | 装 fuckery、1440p、彩色图标。没有 AUR 包 | 可以，`pkgs.grub-theme-dedsec`。每日 `github-rev` 更新也在本仓库 |
 
 ## 未打包
 

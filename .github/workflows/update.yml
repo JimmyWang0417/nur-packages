@@ -3,7 +3,11 @@ name: update
 on:
   workflow_dispatch:
   schedule:
+    # Monday 04:17 UTC updates every allow-listed package.
+    # 16:00 UTC every day updates github-rev only. A pull request is opened
+    # only when rev and hash change.
     - cron: "17 4 * * 1"
+    - cron: "0 16 * * *"
 
 permissions:
   contents: write
@@ -18,22 +22,29 @@ jobs:
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Bump packages listed in updates.nix
+        env:
+          UPDATE_KINDS: ${{ github.event.schedule == '0 16 * * *' && 'github-rev' || '' }}
         run: python3 ./scripts/update.py
       - name: Open a pull request
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if git diff --quiet; then
-            echo "no version changes"
+            echo "no upstream changes"
             exit 0
           fi
           stamp="$(date -u +%Y%m%d%H%M%S)"
-          branch="update/weekly-${stamp}"
+          if [ "${{ github.event.schedule }}" = "0 16 * * *" ]; then
+            prefix="daily"
+          else
+            prefix="weekly"
+          fi
+          branch="update/${prefix}-${stamp}"
           git checkout -B "$branch"
-          git add -A
+          git add -- pkgs
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-            commit -m "更新 GitHub release 包"
+            commit -m "更新 updates.nix 里的上游包"
           git push -u origin "$branch"
           gh pr create --base main --head "$branch" \
-            --title "更新 GitHub release 包" \
-            --body "由 .github/workflows/update.yml 根据 updates.nix 生成。这个工作流不会 force-push。"
+            --title "更新 updates.nix 里的上游包" \
+            --body "由 .github/workflows/update.yml 根据 updates.nix 生成。rev 和 hash 没有变化时不会开 pull request，也不会 force-push。"
