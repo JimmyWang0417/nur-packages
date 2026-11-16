@@ -32,7 +32,20 @@ stdenvNoCC.mkDerivation {
     ln -s 24 "$dest/24@2x"
     ln -s 32 "$dest/32@2x"
     ln -s scalable "$dest/scalable@2x"
-    find "$dest" -xtype l -delete
+    # xsi-addon-symbolic.svg points at application-x-addon-symbolic.svg, which
+    # is not in symbolic/apps. That file is shipped in symbolic/mimetypes, and
+    # the same icon is also addon-symbolic.svg. Retarget when one of those
+    # exists; drop the link only when the target is absent upstream.
+    addon="$dest/symbolic/apps/xsi-addon-symbolic.svg"
+    if [[ -L $addon && ! -e $addon ]]; then
+      if [[ -e $dest/symbolic/mimetypes/application-x-addon-symbolic.svg ]]; then
+        ln -sfn ../mimetypes/application-x-addon-symbolic.svg "$addon"
+      elif [[ -e $dest/symbolic/apps/addon-symbolic.svg ]]; then
+        ln -sfn addon-symbolic.svg "$addon"
+      else
+        rm -f "$addon"
+      fi
+    fi
     runHook postInstall
   '';
 
