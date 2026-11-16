@@ -1,0 +1,39 @@
+{
+  appimageTools,
+  fetchurl,
+  lib,
+}:
+let
+  pname = "animeko";
+  version = "6.4.0";
+  src = fetchurl {
+    url = "https://github.com/open-ani/animeko/releases/download/v${version}/ani-${version}-linux-x86_64.appimage";
+    hash = "sha256-VnnqjYaiOIPgIhVs8+7F4FrvRZ8ld89xDlp2b2QQTyc=";
+  };
+  contents = appimageTools.extract {
+    inherit pname version src;
+  };
+in
+appimageTools.wrapType2 {
+  inherit pname version src;
+
+  extraInstallCommands = ''
+    install -Dm644 ${contents}/icon.png $out/share/icons/hicolor/512x512/apps/animeko.png
+    install -Dm644 ${contents}/animeko.desktop $out/share/applications/animeko.desktop
+    substituteInPlace $out/share/applications/animeko.desktop \
+      --replace-fail 'Exec=Ani' 'Exec=animeko' \
+      --replace-fail 'Icon=icon' 'Icon=animeko'
+    if [ ! -e "$out/bin/animeko" ]; then
+      ln -s "$out/bin/animeko-${version}" "$out/bin/animeko"
+    fi
+  '';
+
+  meta = {
+    description = "集找番、追番、看番的一站式弹幕追番平台";
+    homepage = "https://github.com/open-ani/animeko";
+    license = lib.licenses.agpl3Plus;
+    mainProgram = "animeko";
+    platforms = [ "x86_64-linux" ];
+    sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
+  };
+}

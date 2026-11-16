@@ -1,0 +1,20 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build every packages.x86_64-linux attribute
+        run: |
+          attrs=$(nix --extra-experimental-features 'nix-command flakes' eval --raw .#packages.x86_64-linux --apply 'attrs: builtins.concatStringsSep " " (map (name: ".#${name}") (builtins.attrNames attrs))')
+          echo "building $attrs"
+          nix --extra-experimental-features 'nix-command flakes' build --no-link --print-out-paths $attrs
