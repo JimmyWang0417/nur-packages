@@ -16,8 +16,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   # Tag v0.2.2 ships no Cargo.lock. cargoLock vendors from the file beside
   # this expression. postUnpack places that lock into the unpacked tree while
-  # it is still writable. This is the approach in
-  # /nix/store/a9zjvqwxm8wfrmdw24cq0y1689lmjij6-crm-0.2.2.drv.
+  # it is still writable.
   cargoLock.lockFile = ./Cargo.lock;
   postUnpack = ''
     cp ${./Cargo.lock} "$sourceRoot/Cargo.lock"

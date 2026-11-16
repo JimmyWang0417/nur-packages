@@ -7,9 +7,9 @@ stdenvNoCC.mkDerivation {
   pname = "grub-theme-dedsec";
   version = "0-unstable-2025-10-24";
 
-  # Live /boot/grub/themes/dedsec is this repo's 1440p theme: theme.txt
-  # matches base/1440p, background.png is fuckery-1440p.png (2813545 bytes),
-  # and the icons match assets/icons-1440p/color.
+  # 1440p theme installed under $out: theme.txt matches base/1440p,
+  # background.png is fuckery-1440p.png, and the icons match
+  # assets/icons-1440p/color.
   src = fetchFromGitHub {
     owner = "VandalByte";
     repo = "dedsec-grub2-theme";

@@ -2,16 +2,16 @@
 
 JimmyWang0417 的 NUR 仓库。nixpkgs 固定在 `github:NixOS/nixpkgs/nixos-26.05`。完整调用约定在 [docs/接口.md](docs/接口.md)。
 
-主题包和每日更新在 nur-packages，nixos-config 只引用。
+主题包和每日更新都在本仓库。调用方只引用输出。
 
 `nixpkgs.config.allowUnfree` 必须为真，否则 `xjtu-course-genius` 在求值时会被 nixpkgs 拒绝。
 
 ## 已打包
 
-| 属性 | 版本 | 来源 | 相对 AUR 改了什么 | 能否被 nixos-config 引用 |
+| 属性 | 版本 | 来源 | 相对 AUR 改了什么 | 如何引用 |
 | --- | --- | --- | --- | --- |
 | `crm` | 0.2.2 | [AUR crm](https://aur.archlinux.org/packages/crm)，上游 [wtklbm/crm](https://github.com/wtklbm/crm) | AUR 构建时 `cargo update -w`。这里用 `buildRustPackage` 和提交的 `Cargo.lock` | 可以，`pkgs.crm` |
-| `docker-easyconnect` | 7.6.7 | [hagb/docker-easyconnect](https://github.com/docker-easyconnect/docker-easyconnect) 的 GUI 镜像 | 不安装宿主机 Sangfor deb。`dockerTools.pullImage` 钉住 linux/amd64 的镜像 digest。默认端口是本机 `5901`、`1080`、`8888` | 可以，`pkgs.docker-easyconnect`。`updates.nix` 还不跟踪 OCI tag |
+| `docker-easyconnect` | 7.6.7 | [hagb/docker-easyconnect](https://github.com/docker-easyconnect/docker-easyconnect) 的 GUI 镜像 | 不安装宿主机 Sangfor deb。`dockerTools.pullImage` 钉住 linux/amd64 的镜像 digest。上游 GUI 在 localhost 发布 `5901`、`1080`、`8888` | 可以，`pkgs.docker-easyconnect`。`updates.nix` 还不跟踪 OCI tag |
 | `animeko` | 6.4.0 | [open-ani/animeko](https://github.com/open-ani/animeko/releases/tag/v6.4.0) v6.4.0 官方 AppImage | 不采用 AUR `animeko-appimage` 的 PKGBUILD。`fetchurl` 固定哈希，`wrapType2` 提供 `animeko`，桌面项用 `makeDesktopItem`，图标取自 AppImage | 可以，`pkgs.animeko` |
 | `botmux` | 3.59.15 | [deepcoldy/botmux](https://github.com/deepcoldy/botmux/releases/tag/v3.59.15) | `fetchurl` 安装官方 ELF，并把 `tmux` 放进 `PATH` | 可以，`pkgs.botmux` |
 | `xjtutoolbox` | 1.4.1 | [yan-xiaoo/XJTUToolBox](https://github.com/yan-xiaoo/XJTUToolBox/releases/tag/v1.4.1) 的 AppImage | 不再拆 AUR 用的 pacman `.pkg.tar.zst` | 可以，`pkgs.xjtutoolbox` |

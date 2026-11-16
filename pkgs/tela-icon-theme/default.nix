@@ -7,7 +7,7 @@ stdenvNoCC.mkDerivation {
   pname = "tela-icon-theme";
   version = "0-unstable-2026-08-10";
 
-  # Live ~/.local/share/icons/Tela is the standard color, directory name Tela.
+  # Standard color, installed as $out/share/icons/Tela.
   # index.theme matches src/index.theme with %NAME% replaced by Tela, including
   # FollowsColorScheme=true. Not Tela-dark, Tela-light, or a recolored variant.
   src = fetchFromGitHub {
