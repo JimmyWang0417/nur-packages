@@ -51,14 +51,6 @@
     asset = "";
   }
   {
-    attribute = "whitesur-kde";
-    file = "pkgs/whitesur-kde/default.nix";
-    owner = "vinceliuice";
-    repo = "WhiteSur-kde";
-    kind = "github-rev";
-    asset = "";
-  }
-  {
     attribute = "tela-icon-theme";
     file = "pkgs/tela-icon-theme/default.nix";
     owner = "vinceliuice";

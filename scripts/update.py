@@ -26,8 +26,7 @@ Inputs:
     `nix flake prefetch github:<owner>/<repo>/<rev>`, which matches
     fetchFromGitHub. A version of the form 0-unstable-YYYY-MM-DD is set
     from the committer date. Hashes already in the file are left alone
-    until that rewrite. whitesur-kde has two fetches of WhiteSur-kde;
-    both follow this rule.
+    until that rewrite.
 
   UPDATE_KINDS, if set, is a comma-separated subset of kinds to process.
   The daily cron sets it to github-rev. An empty value updates every entry.

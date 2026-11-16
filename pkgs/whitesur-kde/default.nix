@@ -4,9 +4,8 @@
   fetchFromGitHub,
 }:
 let
-  # Same repository, two revisions. scripts/update.py rewrites every rev/hash
-  # pair here to the default-branch HEAD, so both fetches stay on the daily
-  # github-rev run. The paths below follow whichever layout that revision has.
+  # 壁纸和边框是两次不同提交，不跟默认分支一起更新.
+  # The paths below follow whichever layout that revision has.
   wallpaper = fetchFromGitHub {
     owner = "vinceliuice";
     repo = "WhiteSur-kde";
