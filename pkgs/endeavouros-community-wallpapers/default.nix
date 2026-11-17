@@ -15,8 +15,8 @@ stdenvNoCC.mkDerivation {
   src = fetchFromGitHub {
     owner = "EndeavourOS-Community-Editions";
     repo = "Community-wallpapers";
-    rev = "358c0cee2f628c3c582c5a4e531b9ef2c79abc77";
-    hash = "sha256-EmZvmD0bbMAaAJbwrLYnhj7NE6Fv2BvaZd2CN7AvgKs=";
+    rev = "6b68066f583196aa71485940cb10412d58dbc867";
+    hash = "sha256-UYAklciEVb73/bc3Fcj4RZVHMdCmjZwAGp/GDDnwnRM=";
   };
 
   nativeBuildInputs = [
