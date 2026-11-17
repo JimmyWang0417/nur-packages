@@ -1,6 +1,8 @@
 """Offline checks for github-rev updates with one or more fetches."""
 
 from pathlib import Path
+import json
+import os
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -89,6 +91,37 @@ class RevUpdateTests(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 update.update_rev(ITEM)
         self.assertEqual(self.path.read_text(), bad)
+
+
+class GitHubRequestTests(unittest.TestCase):
+    def _response(self, payload):
+        body = json.dumps(payload).encode()
+
+        class Resp:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def read(self):
+                return body
+
+        return Resp()
+
+    def test_sends_bearer_token_when_set(self):
+        with patch.dict(os.environ, {"GITHUB_TOKEN": "test-token"}), \
+             patch.object(update.urllib.request, "urlopen", return_value=self._response({"sha": "abc"})) as urlopen:
+            self.assertEqual(update.github_json("https://api.github.com/x"), {"sha": "abc"})
+        self.assertEqual(urlopen.call_args.args[0].get_header("Authorization"), "Bearer test-token")
+
+    def test_omits_authorization_without_token(self):
+        env = os.environ.copy()
+        env.pop("GITHUB_TOKEN", None)
+        with patch.dict(os.environ, env, clear=True), \
+             patch.object(update.urllib.request, "urlopen", return_value=self._response({"sha": "abc"})) as urlopen:
+            update.github_json("https://api.github.com/x")
+        self.assertIsNone(urlopen.call_args.args[0].get_header("Authorization"))
 
 
 if __name__ == "__main__":

@@ -36,6 +36,8 @@ Inputs:
 
   UPDATE_KINDS, if set, is a comma-separated subset of kinds to process.
   The daily cron sets it to github-rev. An empty value updates every entry.
+  GitHub API calls send Authorization: Bearer $GITHUB_TOKEN when that
+  variable is set. Actions otherwise shares the unauthenticated rate limit.
 
 A package that is not listed is never modified.
 
@@ -77,17 +79,22 @@ def load_updates():
     return json.loads(raw)
 
 
-def latest_release(owner: str, repo: str) -> dict:
-    url = f"https://api.github.com/repos/{owner}/{repo}/releases/latest"
-    req = urllib.request.Request(
-        url,
-        headers={
-            "Accept": "application/vnd.github+json",
-            "User-Agent": "nur-packages-update",
-        },
-    )
+def github_json(url: str) -> dict:
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "User-Agent": "nur-packages-update",
+    }
+    token = os.environ.get("GITHUB_TOKEN", "").strip()
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req) as resp:
         return json.load(resp)
+
+
+def latest_release(owner: str, repo: str) -> dict:
+    url = f"https://api.github.com/repos/{owner}/{repo}/releases/latest"
+    return github_json(url)
 
 
 def latest_version(owner: str, repo: str) -> str:
@@ -108,15 +115,7 @@ def current_revs(text: str) -> list[str]:
 
 def latest_commit(owner: str, repo: str) -> tuple[str, str]:
     url = f"https://api.github.com/repos/{owner}/{repo}/commits/HEAD"
-    req = urllib.request.Request(
-        url,
-        headers={
-            "Accept": "application/vnd.github+json",
-            "User-Agent": "nur-packages-update",
-        },
-    )
-    with urllib.request.urlopen(req) as resp:
-        data = json.load(resp)
+    data = github_json(url)
     day = data["commit"]["committer"]["date"][:10]
     return data["sha"], day
 

@@ -25,6 +25,7 @@ jobs:
       - name: Bump packages listed in updates.nix
         env:
           UPDATE_KINDS: ${{ github.event.schedule == '0 16 * * *' && 'github-rev' || '' }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 ./scripts/update.py
       - name: Validate changed Typora plugin before committing
         run: |
