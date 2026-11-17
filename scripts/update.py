@@ -23,7 +23,7 @@ Inputs:
     update only pluginVersion and the plugin source block in sources.nix.
     Preserve the actual release tag (with or without v), require the matching
     release asset, and leave the historical Typora editor and architecture
-    hashes pinned. CI validates the updated package before opening the PR.
+    hashes pinned. CI validates the updated package before committing to main.
 
   kind = "github-rev":
     latest commit on the default branch. When that SHA differs from any
@@ -41,8 +41,8 @@ A package that is not listed is never modified.
 
 Outputs:
   rewritten nix files and, for github-source, a new Cargo.lock.
-  The workflow commits those files on a new branch and opens a pull request
-  only when the worktree changed. It does not force-push.
+  The workflow commits those files and pushes them to main only when the
+  worktree changed. It does not open a pull request and does not force-push.
 """
 
 from __future__ import annotations
