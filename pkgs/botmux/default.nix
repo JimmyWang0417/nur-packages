@@ -8,11 +8,11 @@
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "botmux";
-  version = "3.59.15";
+  version = "3.59.17";
 
   src = fetchurl {
     url = "https://github.com/deepcoldy/botmux/releases/download/v${finalAttrs.version}/botmux-linux-x64";
-    hash = "sha256-+z8lNOjxa8EgCJ9+KmUZfUQV7le4oXuD9DL2YZCxkIs=";
+    hash = "sha256-7vFP0LdqmxsFcRdW/zCsRO2JpeUXbUAOSKJIXBqgFuI=";
   };
 
   dontUnpack = true;
