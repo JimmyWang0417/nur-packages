@@ -54,6 +54,14 @@
     asset = "ani-{version}-linux-x86_64.appimage";
   }
   {
+    attribute = "claude-cage";
+    file = "pkgs/claude-cage/default.nix";
+    owner = "Lee-xeo";
+    repo = "Claude-Cage";
+    kind = "github-asset";
+    asset = "Cage-{version}-linux-amd64.deb";
+  }
+  {
     attribute = "botmux";
     file = "pkgs/botmux/default.nix";
     owner = "deepcoldy";

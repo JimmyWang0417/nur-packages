@@ -3,6 +3,7 @@
   animeko = pkgs.callPackage ./pkgs/animeko { };
   botmux = pkgs.callPackage ./pkgs/botmux { };
   breath-wallpapers = pkgs.callPackage ./pkgs/breath-wallpapers { };
+  claude-cage = pkgs.callPackage ./pkgs/claude-cage { };
   crm = pkgs.callPackage ./pkgs/crm { };
   docker-easyconnect = pkgs.callPackage ./pkgs/docker-easyconnect { };
   endeavouros-community-wallpapers = pkgs.callPackage ./pkgs/endeavouros-community-wallpapers { };
