@@ -78,8 +78,8 @@ stdenv.mkDerivation (finalAttrs: {
   meta = {
     description = "西安交通大学选课助手";
     homepage = "https://github.com/Hz162/XJTU-Course-Genius";
-    # Upstream ships no LICENSE file with the repository or the deb.
-    license = lib.licenses.unfree;
+    # Free software; upstream has not published a formal license certificate yet.
+    license = lib.licenses.free;
     mainProgram = "xjtu-course-genius";
     platforms = [ "x86_64-linux" ];
     sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];

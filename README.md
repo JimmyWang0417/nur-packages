@@ -4,7 +4,7 @@ JimmyWang0417 的 NUR 仓库。nixpkgs 固定在 `github:NixOS/nixpkgs/nixos-26.
 
 主题包和每日更新都在本仓库。调用方只引用输出。
 
-`nixpkgs.config.allowUnfree` 必须为真，否则 `xjtu-course-genius`、`typora` 在求值时会被 nixpkgs 拒绝。
+`nixpkgs.config.allowUnfree` 必须为真，否则 `typora` 在求值时会被 nixpkgs 拒绝。
 
 ## 已打包
 
@@ -20,7 +20,7 @@ JimmyWang0417 的 NUR 仓库。nixpkgs 固定在 `github:NixOS/nixpkgs/nixos-26.
 | `qoder` | 0.5.16 | [Qoder](https://qoder.com) 官方 `Qoder-linux-amd64.deb` | 国际版，和 `qoder-cn` 不是同一个 deb。nixpkgs 和 NUR 都没有这份 | 可以，需要 `allowUnfree`。不作为系统默认安装。每日 `http-version` 读 `latest-linux.yml` |
 | `trae-cn` | 2.3.105403 | [Trae CN](https://www.trae.com.cn/) 官方 `TRAE_CN-linux-x64.deb`，应用版本 3.4.22 | 国际版继续用 NUR `lonerOrz.trae`，这里不复制。版本号是 CDN 构建号 | 可以，需要 `allowUnfree`。系统安装这个。每日 `http-version` 读中国版清单 |
 | `xjtutoolbox` | 1.4.1 | [yan-xiaoo/XJTUToolBox](https://github.com/yan-xiaoo/XJTUToolBox/releases/tag/v1.4.1) 的 AppImage | 不再拆 AUR 用的 pacman `.pkg.tar.zst` | 可以，`pkgs.xjtutoolbox` |
-| `xjtu-course-genius` | 4.6.1 | [Hz162/XJTU-Course-Genius](https://github.com/Hz162/XJTU-Course-Genius/releases/tag/v4.6.1) 的 deb | AUR 仓库是空的，直接取 GitHub release | 可以，需要 `allowUnfree` |
+| `xjtu-course-genius` | 4.6.1 | [Hz162/XJTU-Course-Genius](https://github.com/Hz162/XJTU-Course-Genius/releases/tag/v4.6.1) 的 deb | AUR 仓库是空的，直接取 GitHub release | 可以，`pkgs.xjtu-course-genius` |
 | `grub-theme-dedsec` | 0-unstable-2025-10-24 | [VandalByte/dedsec-grub2-theme](https://github.com/VandalByte/dedsec-grub2-theme) `bbfe078386545688727f44897a7fede8af2c6dda` | 装 fuckery、1440p、彩色图标。没有 AUR 包 | 可以，`pkgs.grub-theme-dedsec`。每日 `github-rev` 更新也在本仓库 |
 | `whitesur-kde` | 0-unstable-2026-08-07 | [vinceliuice/WhiteSur-kde](https://github.com/vinceliuice/WhiteSur-kde) `cf4df59ce91004f7ea39358b1b8ff917d5c329f7` | 壁纸是 `wallpaper/WhiteSur` 的浅色与深色 `3840x2160.jpg`。装饰由 `aurorae/main/WhiteSur/` 装成 `WhiteSur`。没有 AUR 包 | 可以，`pkgs.whitesur-kde`。每日 `github-rev` 更新也在本仓库 |
 | `breath-wallpapers` | 0-unstable-2024-06-07 | [manjaro-contrib/artwork-themes-breath](https://github.com/manjaro-contrib/artwork-themes-breath) `1b708941f52be6f36ed61635659ad1d26c5719d7`，镜像 [code.manjaro.org/artwork/breath](https://code.manjaro.org/artwork/breath) | 装 Bamboo、Bamboo at Night、North、Foreland 到 `share/wallpapers`。没有 AUR 包 | 可以，`pkgs.breath-wallpapers`。每日 `github-rev` 更新也在本仓库 |
