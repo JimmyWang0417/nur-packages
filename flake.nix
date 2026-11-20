@@ -13,9 +13,21 @@
       }));
     in
     {
-      packages = forAllSystems (pkgs: import ./default.nix { inherit pkgs; });
+      # deveco-studio stays out of default.nix. That file is what CI builds
+      # and what checks instantiate. The Huawei zips are only available in
+      # the separate deveco workflow.
+      packages = forAllSystems (pkgs:
+        (import ./default.nix { inherit pkgs; })
+        // {
+          deveco-studio = pkgs.callPackage ./pkgs/deveco-studio { };
+        }
+      );
 
-      overlays.default = final: prev: import ./default.nix { pkgs = prev; };
+      overlays.default = final: prev:
+        (import ./default.nix { pkgs = prev; })
+        // {
+          deveco-studio = prev.callPackage ./pkgs/deveco-studio { };
+        };
 
       checks = forAllSystems (pkgs:
         nixpkgs.lib.mapAttrs' (
