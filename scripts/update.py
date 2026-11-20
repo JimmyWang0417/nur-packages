@@ -34,6 +34,13 @@ Inputs:
     from the committer date. Hashes already in the file are left alone
     until that rewrite.
 
+  kind = "http-version":
+    HEAD versionUrl and read versionHeader (Qoder publishes
+    x-oss-meta-version on the latest deb). version and the first
+    hash = "sha256-..." line are rewritten from fileUrl, with
+    "{version}" replaced. The nix expression keeps the version in the
+    download URL, so that line is not edited separately.
+
   UPDATE_KINDS, if set, is a comma-separated subset of kinds to process.
   The daily cron sets it to github-rev. An empty value updates every entry.
   GitHub API calls send Authorization: Bearer $GITHUB_TOKEN when that
@@ -252,6 +259,37 @@ def update_rev(item: dict) -> bool:
     return True
 
 
+def latest_http_version(item: dict) -> str:
+    req = urllib.request.Request(
+        item["versionUrl"],
+        method="HEAD",
+        headers={"User-Agent": "nur-packages-update"},
+    )
+    with urllib.request.urlopen(req) as resp:
+        value = resp.headers.get(item["versionHeader"])
+    if not value or not str(value).strip():
+        raise SystemExit(
+            f"header {item['versionHeader']} missing from {item['versionUrl']}"
+        )
+    return str(value).strip()
+
+
+def update_http_version(item: dict) -> bool:
+    path = ROOT / item["file"]
+    text = path.read_text()
+    current = current_version(text)
+    version = latest_http_version(item)
+    print(f"{item['attribute']}: {current} -> {version}")
+    if version == current:
+        return False
+    url = item["fileUrl"].replace("{version}", version)
+    sri = prefetch_url(url)
+    text = replace_once(text, r'version = "[^"]+";', f'version = "{version}";', "version")
+    text = replace_once(text, r'hash = "sha256-[^"]+";', f'hash = "{sri}";', "hash")
+    path.write_text(text)
+    return True
+
+
 def update_typora_plugin(item: dict) -> bool:
     """Update only the plugin release; the historical free editor stays pinned."""
     path = ROOT / item["file"]
@@ -313,6 +351,8 @@ def main() -> None:
             changed = update_typora_plugin(item) or changed
         elif kind == "github-rev":
             changed = update_rev(item) or changed
+        elif kind == "http-version":
+            changed = update_http_version(item) or changed
         else:
             raise SystemExit(f"unknown kind {kind} for {item['attribute']}")
     if not changed:

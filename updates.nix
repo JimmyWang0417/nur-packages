@@ -3,6 +3,17 @@
 # A package is updated only when it appears here.
 [
   {
+    attribute = "qoder";
+    file = "pkgs/qoder/default.nix";
+    owner = "";
+    repo = "";
+    kind = "http-version";
+    asset = "";
+    versionUrl = "https://qoder-app.oss-cn-beijing.aliyuncs.com/qoder-app/releases/latest/Qoder-CN-linux-amd64.deb";
+    versionHeader = "x-oss-meta-version";
+    fileUrl = "https://qoder-app.oss-cn-beijing.aliyuncs.com/qoder-app/releases/{version}/Qoder-CN-linux-amd64.deb";
+  }
+  {
     attribute = "typora";
     file = "pkgs/typora/sources.nix";
     owner = "obgnail";

@@ -27,3 +27,5 @@ jobs:
         run: python3 -m unittest discover -s scripts -p 'test_update_typora.py' -v
       - name: Test github-rev update handling
         run: python3 -m unittest discover -s scripts -p 'test_update_rev.py' -v
+      - name: Test http-version update handling
+        run: python3 -m unittest discover -s scripts -p 'test_update_http_version.py' -v
