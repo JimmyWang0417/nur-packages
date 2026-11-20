@@ -28,7 +28,15 @@
   util-linux,
   vulkan-loader,
   xdg-utils,
-  xorg,
+  libx11,
+  libxcomposite,
+  libxdamage,
+  libxext,
+  libxfixes,
+  libxrandr,
+  libxscrnsaver,
+  libxtst,
+  libxcb,
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "qoder";
@@ -69,20 +77,26 @@ stdenv.mkDerivation (finalAttrs: {
     systemd
     util-linux
     vulkan-loader
-    xorg.libX11
-    xorg.libXcomposite
-    xorg.libXdamage
-    xorg.libXext
-    xorg.libXfixes
-    xorg.libXrandr
-    xorg.libXScrnSaver
-    xorg.libXtst
-    xorg.libxcb
+    libx11
+    libxcomposite
+    libxdamage
+    libxext
+    libxfixes
+    libxrandr
+    libxscrnsaver
+    libxtst
+    libxcb
   ];
 
   dontConfigure = true;
   dontBuild = true;
   dontStrip = true;
+
+  # Upstream ships a musl build of sharp beside the glibc one. NixOS uses the
+  # glibc copy, so the musl interpreter is not a runtime dependency.
+  autoPatchelfIgnoreMissingDeps = [
+    "libc.musl-x86_64.so.1"
+  ];
 
   # ar + tar, not dpkg-deb: the deb marks chrome-sandbox executable for every
   # user, and dpkg-deb preserves that mode in a way the Nix sandbox rejects.
