@@ -4,8 +4,9 @@ on:
   workflow_dispatch:
   schedule:
     # Monday 04:17 UTC updates every allow-listed package.
-    # 16:00 UTC every day updates github-rev and http-version. Changed files
-    # are committed and pushed to main. Nothing is pushed when nothing changed.
+    # 16:00 UTC every day updates github-rev, http-version, and github-version.
+    # Changed files are committed and pushed to main. Nothing is pushed when
+    # nothing changed.
     - cron: "17 4 * * 1"
     - cron: "0 16 * * *"
 
@@ -24,7 +25,7 @@ jobs:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Bump packages listed in updates.nix
         env:
-          UPDATE_KINDS: ${{ github.event.schedule == '0 16 * * *' && 'github-rev,http-version' || '' }}
+          UPDATE_KINDS: ${{ github.event.schedule == '0 16 * * *' && 'github-rev,http-version,github-version' || '' }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 ./scripts/update.py
       - name: Validate changed Typora plugin before committing

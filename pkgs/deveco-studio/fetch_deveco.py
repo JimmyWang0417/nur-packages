@@ -91,9 +91,8 @@ def find_hdx() -> str:
             )
         return str(resolved)
     raise SystemExit(
-        "hdx is not on PATH. nixpkgs has no Linux hdx, and the public "
-        "chawyehsu/hdx repository publishes no Linux source or binary. "
-        "Put a Linux hdx on PATH, then rerun `nix run .#fetch-deveco`."
+        "hdx is not available. The DevEco fetch runs the hdx package from "
+        "this repository; rerun `nix run .#fetch-deveco`."
     )
 
 

@@ -2,8 +2,9 @@
 # Copy this unit and deveco-fetch.timer to ~/.config/systemd/user/, then:
 #   systemctl --user enable --now deveco-fetch.timer
 #
-# WorkingDirectory is this nur-packages checkout. hdx reads
-# ~/.config/hdx/credentials.json itself. This unit never prints a download URL.
+# hdx reads ~/.config/hdx/credentials.json itself. `nix run .#fetch-deveco`
+# brings the hdx package, so this unit does not need hdx installed on PATH.
+# This unit never prints a download URL.
 
 [Unit]
 Description=Refresh DevEco Studio archives and rebuild the package

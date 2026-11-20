@@ -134,4 +134,12 @@
     kind = "github-rev";
     asset = "";
   }
+  {
+    attribute = "deveco-studio";
+    file = "pkgs/deveco-studio/default.nix";
+    owner = "alex3236";
+    repo = "devecostudio-linux";
+    kind = "github-version";
+    asset = "";
+  }
 ]

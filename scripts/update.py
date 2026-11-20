@@ -34,6 +34,12 @@ Inputs:
     from the committer date. Hashes already in the file are left alone
     until that rewrite.
 
+  kind = "github-version":
+    latest GitHub release tag. One leading "v" is ignored, and a trailing
+    "-<digits>" package release is removed. Only the first
+    version = "..." assignment is rewritten. Nothing is downloaded and no
+    hash line is changed.
+
   kind = "http-version":
     When versionPattern is set, GET versionUrl and take the first
     capture group. Otherwise HEAD versionUrl and read versionHeader
@@ -43,7 +49,8 @@ Inputs:
     version in the download URL, so that line is not edited separately.
 
   UPDATE_KINDS, if set, is a comma-separated subset of kinds to process.
-  The daily cron sets it to github-rev. An empty value updates every entry.
+  The daily cron sets it to github-rev,http-version,github-version. An empty
+  value updates every entry.
   GitHub API calls send Authorization: Bearer $GITHUB_TOKEN when that
   variable is set. Actions otherwise shares the unauthenticated rate limit.
 
@@ -352,6 +359,33 @@ def update_typora_plugin(item: dict) -> bool:
     return True
 
 
+RELEASE_VERSION = re.compile(r"v?(?P<version>\d+\.\d+\.\d+\.\d+)(?:-\d+)?\Z")
+
+
+def release_version(owner: str, repo: str) -> str:
+    tag = str(latest_release(owner, repo)["tag_name"]).strip()
+    match = RELEASE_VERSION.fullmatch(tag)
+    if not match or "://" in tag or "/" in tag:
+        raise SystemExit(f"unexpected release tag: {tag}")
+    return match.group("version")
+
+
+def update_release_version(item: dict) -> bool:
+    """Rewrite the version string from a public GitHub release tag."""
+    path = ROOT / item["file"]
+    text = path.read_text()
+    current = current_version(text)
+    version = release_version(item["owner"], item["repo"])
+    print(f"{item['attribute']}: {current} -> {version}")
+    if version == current:
+        return False
+    text = replace_once(text, r'version = "[^"]+";', f'version = "{version}";', "version")
+    if "://" in version:
+        raise SystemExit("refusing a version that looks like a URL")
+    path.write_text(text)
+    return True
+
+
 def main() -> None:
     changed = False
     allowed = {
@@ -373,6 +407,8 @@ def main() -> None:
             changed = update_rev(item) or changed
         elif kind == "http-version":
             changed = update_http_version(item) or changed
+        elif kind == "github-version":
+            changed = update_release_version(item) or changed
         else:
             raise SystemExit(f"unknown kind {kind} for {item['attribute']}")
     if not changed:
