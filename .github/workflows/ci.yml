@@ -16,7 +16,7 @@ jobs:
       - name: Build every packages.x86_64-linux attribute
         run: |
           attrs_json=$(nix --extra-experimental-features 'nix-command flakes' eval --json .#packages.x86_64-linux --apply builtins.attrNames)
-          mapfile -t attrs < <(python3 -c 'import json, sys; print(*(".#" + name for name in json.load(sys.stdin) if name != "deveco-studio"), sep="\n")' <<< "$attrs_json")
+          mapfile -t attrs < <(python3 -c 'import json, sys; skip={"deveco-studio","fetch-deveco"}; print(*(".#" + name for name in json.load(sys.stdin) if name not in skip), sep="\n")' <<< "$attrs_json")
           printf 'building %s\n' "${attrs[@]}"
           nix --extra-experimental-features 'nix-command flakes' build --no-link --print-out-paths "${attrs[@]}"
       - name: Check Typora layout, launcher, and GUI

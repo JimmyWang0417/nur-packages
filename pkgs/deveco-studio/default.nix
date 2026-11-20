@@ -1,19 +1,19 @@
 # DevEco Studio for Linux, assembled the way alex3236/devecostudio-linux
 # tag v26.0.0 does (pkgver 26.0.0.851, IDEA 2026.1.3):
 #   Mac DevEco zip + Linux command-line tools zip + JetBrains IDEA.
-# The Huawei archives are not fetched here. Their URLs are signed and
-# short-lived, and the same version can be republished with different bytes.
-# .github/workflows/deveco.yml downloads them with hdx in one job, then
-# passes the files in. hdx's login is GitHub secret HDX_CREDENTIALS, the
-# contents of ~/.config/hdx/credentials.json after one local `hdx auth login`.
-# That login asks for a one-time SMS code, so Actions only refreshes the
-# stored file. The previewer stays unavailable.
+#
+# The two DevEco archives are not fetched here. Their URLs are signed and
+# short-lived. `nix run .#fetch-deveco` runs local hdx, adds the files to
+# the Nix store with flat hashes, and writes only those hashes to the
+# gitignored file pkgs/deveco-studio/sources.local.nix. This derivation
+# then uses requireFile. IDEA comes from the public JetBrains URL below.
 {
   lib,
   stdenv,
   stdenvNoCC,
   fetchurl,
   fetchFromGitHub,
+  requireFile,
   bash,
   coreutils,
   findutils,
@@ -35,8 +35,30 @@
 let
   version = "26.0.0.851";
   ideaVersion = "2026.1.3";
-  zipsPresent = macZip != null && cliZip != null;
   upstreamRev = "f7afbf391f5ea96fce6a1034d835274d6327bfe3"; # tag v26.0.0
+  givenMac = macZip;
+  givenCli = cliZip;
+  direct = givenMac != null && givenCli != null;
+  sources = if direct then null else import ./sources.nix;
+
+  hashOk = value: builtins.match "sha256-[A-Za-z0-9+/]{43}=" value != null;
+  nameOk = value: builtins.match "[A-Za-z0-9._+-]+" value != null;
+  entryOk = entry: entry ? name && entry ? hash && nameOk entry.name && hashOk entry.hash;
+  sourcesOk = sources != null && sources ? mac && sources ? cli
+    && entryOk sources.mac && entryOk sources.cli;
+
+  archive = entry: requireFile {
+    name = entry.name;
+    hash = entry.hash;
+    hashMode = "flat";
+    message = ''
+      ${entry.name} is not in the Nix store.
+      From nur-packages run `nix run .#fetch-deveco`.
+      That refreshes the local hdx login and adds the archives by hash.
+      If refresh fails, run `hdx auth login` on this machine.
+      Then run `nix build --impure .#deveco-studio`.
+    '';
+  };
 
   missing = stdenvNoCC.mkDerivation {
     pname = "deveco-studio";
@@ -45,17 +67,18 @@ let
     dontBuild = true;
     installPhase = ''
       cat <<'EOF' >&2
-DevEco Studio needs the Mac zip and the Linux command-line-tools zip.
-GitHub Actions downloads both with hdx and builds them in
-.github/workflows/deveco.yml. Add repository secret HDX_CREDENTIALS:
-the contents of ~/.config/hdx/credentials.json after one local
-`hdx auth login`. Do not commit that file.
+DevEco Studio needs local archive hashes.
+From nur-packages run `nix run .#fetch-deveco`.
+That refreshes the local hdx login and writes pkgs/deveco-studio/sources.local.nix.
+If refresh fails, run `hdx auth login` on this machine.
+Then run `nix build --impure .#deveco-studio`.
 EOF
       exit 1
     '';
+    passthru.archivesReady = false;
     meta = {
       description = "Huawei DevEco Studio assembled for Linux";
-      homepage = "https://developer.huawei.com/consumer/cn/deveco-studio/";
+      homepage = "https://github.com/alex3236/devecostudio-linux";
       license = lib.licenses.unfree;
       platforms = [ "x86_64-linux" ];
       mainProgram = "devecostudio";
@@ -87,8 +110,8 @@ EOF
       binutils
     ];
 
-    macZip = macZip;
-    cliZip = cliZip;
+    macZip = if direct then givenMac else archive sources.mac;
+    cliZip = if direct then givenCli else archive sources.cli;
     upstream = fetchFromGitHub {
       owner = "alex3236";
       repo = "devecostudio-linux";
@@ -151,9 +174,10 @@ EOF
       runHook postInstall
     '';
 
+    passthru.archivesReady = true;
     meta = {
       description = "Huawei DevEco Studio assembled for Linux";
-      homepage = "https://developer.huawei.com/consumer/cn/deveco-studio/";
+      homepage = "https://github.com/alex3236/devecostudio-linux";
       license = lib.licenses.unfree;
       platforms = [ "x86_64-linux" ];
       sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
@@ -161,4 +185,4 @@ EOF
     };
   };
 in
-if zipsPresent then full else missing
+if direct || sourcesOk then full else missing

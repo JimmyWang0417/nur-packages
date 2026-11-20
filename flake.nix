@@ -14,14 +14,21 @@
     in
     {
       # deveco-studio stays out of default.nix. That file is what CI builds
-      # and what checks instantiate. The Huawei zips are only available in
-      # the separate deveco workflow.
+      # and what checks instantiate. fetch-deveco is an app, not a package,
+      # so the CI package loop does not build it or download DevEco archives.
       packages = forAllSystems (pkgs:
         (import ./default.nix { inherit pkgs; })
         // {
           deveco-studio = pkgs.callPackage ./pkgs/deveco-studio { };
         }
       );
+
+      apps = forAllSystems (pkgs: {
+        fetch-deveco = {
+          type = "app";
+          program = "${pkgs.callPackage ./pkgs/deveco-studio/fetch.nix { }}/bin/fetch-deveco";
+        };
+      });
 
       overlays.default = final: prev:
         (import ./default.nix { pkgs = prev; })

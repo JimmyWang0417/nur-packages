@@ -1,0 +1,18 @@
+# User service. nixos-config does not install or enable this.
+# Copy this unit and deveco-fetch.timer to ~/.config/systemd/user/, then:
+#   systemctl --user enable --now deveco-fetch.timer
+#
+# WorkingDirectory is this nur-packages checkout. hdx reads
+# ~/.config/hdx/credentials.json itself. This unit never prints a download URL.
+
+[Unit]
+Description=Refresh DevEco Studio archives and rebuild the package
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/Git Repositories/nur-packages
+Environment=DEVECO_SOURCES=%h/Git Repositories/nur-packages/pkgs/deveco-studio/sources.local.nix
+Environment=PATH=%h/.local/bin:%h/.cargo/bin:%h/.nix-profile/bin:/run/current-system/sw/bin:/usr/bin:/bin
+TimeoutStartSec=infinity
+ExecStart=%h/.local/bin/nix --extra-experimental-features "nix-command flakes" run .#fetch-deveco
+ExecStart=%h/.local/bin/nix --extra-experimental-features "nix-command flakes" build --impure --no-link .#deveco-studio

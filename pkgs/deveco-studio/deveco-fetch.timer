@@ -1,0 +1,14 @@
+# User timer. nixos-config does not install or enable this.
+# It runs deveco-fetch.service once a week: refresh hdx, record hashes,
+# then build .#deveco-studio. Copy both units to ~/.config/systemd/user/.
+
+[Unit]
+Description=Weekly DevEco Studio fetch and rebuild
+
+[Timer]
+OnCalendar=Mon *-*-* 04:17:00
+Persistent=true
+Unit=deveco-fetch.service
+
+[Install]
+WantedBy=timers.target
