@@ -3,8 +3,8 @@
 # A package is updated only when it appears here.
 [
   {
-    attribute = "qoder";
-    file = "pkgs/qoder/default.nix";
+    attribute = "qoder-cn";
+    file = "pkgs/qoder-cn/default.nix";
     owner = "";
     repo = "";
     kind = "http-version";
@@ -12,6 +12,30 @@
     versionUrl = "https://qoder-app.oss-cn-beijing.aliyuncs.com/qoder-app/releases/latest/Qoder-CN-linux-amd64.deb";
     versionHeader = "x-oss-meta-version";
     fileUrl = "https://qoder-app.oss-cn-beijing.aliyuncs.com/qoder-app/releases/{version}/Qoder-CN-linux-amd64.deb";
+  }
+  {
+    attribute = "qoder";
+    file = "pkgs/qoder/default.nix";
+    owner = "";
+    repo = "";
+    kind = "http-version";
+    asset = "";
+    versionUrl = "https://download.qoder.com/qoder-app/releases/latest-linux.yml";
+    versionHeader = "";
+    versionPattern = "(?m)^version:\\s*(\\S+)";
+    fileUrl = "https://download.qoder.com/qoder-app/releases/{version}/Qoder-linux-amd64.deb";
+  }
+  {
+    attribute = "trae-cn";
+    file = "pkgs/trae-cn/default.nix";
+    owner = "";
+    repo = "";
+    kind = "http-version";
+    asset = "";
+    versionUrl = "https://api.trae.ai/icube/api/v1/native/version/trae/cn/latest";
+    versionHeader = "";
+    versionPattern = "https://lf-cdn\\.trae\\.com\\.cn/obj/trae-com-cn/pkg/app/releases/stable/([^/]+)/linux/TRAE_CN-linux-x64\\.deb";
+    fileUrl = "https://lf-cdn.trae.com.cn/obj/trae-com-cn/pkg/app/releases/stable/{version}/linux/TRAE_CN-linux-x64.deb";
   }
   {
     attribute = "typora";

@@ -43,8 +43,8 @@ stdenv.mkDerivation (finalAttrs: {
   version = "0.5.16";
 
   src = fetchurl {
-    url = "https://qoder-app.oss-cn-beijing.aliyuncs.com/qoder-app/releases/${finalAttrs.version}/Qoder-CN-linux-amd64.deb";
-    hash = "sha256-V9aAfbHX0E+L3/g9yzZtruzupEJJWsa9STsRtSV2I8Y=";
+    url = "https://download.qoder.com/qoder-app/releases/${finalAttrs.version}/Qoder-linux-amd64.deb";
+    hash = "sha256-TbQKh9oims7rzptIJcGQO1CT6TNPUmRaV2bATgPeLZo=";
   };
 
   nativeBuildInputs = [
@@ -111,20 +111,20 @@ stdenv.mkDerivation (finalAttrs: {
     runHook preInstall
 
     mkdir -p "$out/opt" "$out/bin" "$out/share"
-    cp -a opt/Qoder-CN "$out/opt/Qoder-CN"
+    cp -a opt/Qoder "$out/opt/Qoder"
     cp -a usr/share/icons "$out/share/icons"
-    install -Dm644 usr/share/applications/qoder-cn.desktop \
-      "$out/share/applications/qoder-cn.desktop"
-    substituteInPlace "$out/share/applications/qoder-cn.desktop" \
-      --replace-fail "/opt/Qoder-CN/qoder-cn" "qoder-cn"
+    install -Dm644 usr/share/applications/qoder.desktop \
+      "$out/share/applications/qoder.desktop"
+    substituteInPlace "$out/share/applications/qoder.desktop" \
+      --replace-fail "/opt/Qoder/qoder" "qoder"
 
-    chmod 755 "$out/opt/Qoder-CN/qoder-cn" \
-      "$out/opt/Qoder-CN/chrome-sandbox" \
-      "$out/opt/Qoder-CN/chrome_crashpad_handler"
+    chmod 755 "$out/opt/Qoder/qoder" \
+      "$out/opt/Qoder/chrome-sandbox" \
+      "$out/opt/Qoder/chrome_crashpad_handler"
 
-    makeWrapper "$out/opt/Qoder-CN/qoder-cn" "$out/bin/qoder-cn" \
+    makeWrapper "$out/opt/Qoder/qoder" "$out/bin/qoder" \
       --prefix PATH : "${lib.makeBinPath [ xdg-utils ]}" \
-      --prefix LD_LIBRARY_PATH : "$out/opt/Qoder-CN:${
+      --prefix LD_LIBRARY_PATH : "$out/opt/Qoder:${
         lib.makeLibraryPath [
           libglvnd
           mesa
@@ -137,10 +137,10 @@ stdenv.mkDerivation (finalAttrs: {
   '';
 
   meta = {
-    description = "Qoder CN, the official Linux desktop for the Qoder coding IDE";
-    homepage = "https://qoder.com.cn";
+    description = "Qoder, the official international Linux desktop for the Qoder coding IDE";
+    homepage = "https://qoder.com/";
     license = lib.licenses.unfree;
-    mainProgram = "qoder-cn";
+    mainProgram = "qoder";
     platforms = [ "x86_64-linux" ];
     sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
   };

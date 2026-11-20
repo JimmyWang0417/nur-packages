@@ -52,6 +52,17 @@ class HttpVersionUpdateTests(unittest.TestCase):
             "https://example.invalid/releases/0.5.17/app.deb"
         )
 
+    def test_body_pattern_reads_the_first_capture(self):
+        body = (
+            '{"url":"https://lf-cdn.trae.com.cn/obj/trae-com-cn/pkg/app/releases/'
+            'stable/2.3.105403/linux/TRAE_CN-linux-x64.deb"}'
+        )
+        pattern = (
+            r"https://lf-cdn\.trae\.com\.cn/obj/trae-com-cn/pkg/app/releases/"
+            r"stable/([^/]+)/linux/TRAE_CN-linux-x64\.deb"
+        )
+        self.assertEqual(update.version_from_body(body, pattern), "2.3.105403")
+
     def test_same_version_is_left_alone(self):
         with patch.object(update, "latest_http_version", return_value="0.5.16"), \
              patch.object(update, "prefetch_url") as prefetch:

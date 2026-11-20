@@ -35,11 +35,12 @@ Inputs:
     until that rewrite.
 
   kind = "http-version":
-    HEAD versionUrl and read versionHeader (Qoder publishes
-    x-oss-meta-version on the latest deb). version and the first
-    hash = "sha256-..." line are rewritten from fileUrl, with
-    "{version}" replaced. The nix expression keeps the version in the
-    download URL, so that line is not edited separately.
+    When versionPattern is set, GET versionUrl and take the first
+    capture group. Otherwise HEAD versionUrl and read versionHeader
+    (Qoder CN publishes x-oss-meta-version on the latest deb).
+    version and the first hash = "sha256-..." line are rewritten from
+    fileUrl, with "{version}" replaced. The nix expression keeps the
+    version in the download URL, so that line is not edited separately.
 
   UPDATE_KINDS, if set, is a comma-separated subset of kinds to process.
   The daily cron sets it to github-rev. An empty value updates every entry.
@@ -259,7 +260,26 @@ def update_rev(item: dict) -> bool:
     return True
 
 
+def version_from_body(body: str, pattern: str) -> str:
+    match = re.search(pattern, body)
+    if not match:
+        raise SystemExit("versionPattern did not match the version document")
+    value = match.group(1).strip()
+    if not value:
+        raise SystemExit("versionPattern matched an empty version")
+    return value
+
+
 def latest_http_version(item: dict) -> str:
+    pattern = (item.get("versionPattern") or "").strip()
+    if pattern:
+        req = urllib.request.Request(
+            item["versionUrl"],
+            headers={"User-Agent": "nur-packages-update"},
+        )
+        with urllib.request.urlopen(req) as resp:
+            body = resp.read().decode("utf-8", "replace")
+        return version_from_body(body, pattern)
     req = urllib.request.Request(
         item["versionUrl"],
         method="HEAD",
