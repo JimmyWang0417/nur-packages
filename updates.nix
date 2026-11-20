@@ -62,6 +62,14 @@
     asset = "Cage-{version}-linux-amd64.deb";
   }
   {
+    attribute = "cc-switch";
+    file = "pkgs/cc-switch/default.nix";
+    owner = "farion1231";
+    repo = "cc-switch";
+    kind = "github-asset";
+    asset = "CC-Switch-v{version}-Linux-x86_64.deb";
+  }
+  {
     attribute = "botmux";
     file = "pkgs/botmux/default.nix";
     owner = "deepcoldy";
