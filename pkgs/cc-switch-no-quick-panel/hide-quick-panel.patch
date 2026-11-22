@@ -1,0 +1,17 @@
+--- a/src-tauri/src/tray.rs
++++ b/src-tauri/src/tray.rs
+@@ -2621,14 +2620,0 @@
+-    // Linux 点图标只能出原生菜单，最上面放一项打开托盘面板。
+-    #[cfg(target_os = "linux")]
+-    {
+-        let texts = crate::tray_panel::PanelTexts::current();
+-        let item = MenuItem::with_id(
+-            app,
+-            crate::tray_panel::OPEN_PANEL_ID,
+-            texts.open_panel,
+-            true,
+-            None::<&str>,
+-        )
+-        .map_err(menu_error)?;
+-        builder = builder.item(&item).separator();
+-    }

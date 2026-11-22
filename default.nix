@@ -4,6 +4,7 @@
   botmux = pkgs.callPackage ./pkgs/botmux { };
   breath-wallpapers = pkgs.callPackage ./pkgs/breath-wallpapers { };
   cc-switch = pkgs.callPackage ./pkgs/cc-switch { };
+  cc-switch-no-quick-panel = pkgs.callPackage ./pkgs/cc-switch-no-quick-panel { };
   claude-cage = pkgs.callPackage ./pkgs/claude-cage { };
   crm = pkgs.callPackage ./pkgs/crm { };
   docker-easyconnect = pkgs.callPackage ./pkgs/docker-easyconnect { };
