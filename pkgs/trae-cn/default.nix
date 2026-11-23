@@ -45,11 +45,11 @@
 stdenv.mkDerivation (finalAttrs: {
   pname = "trae-cn";
   # CDN path uses this build id. The China manifest's app version for it is 3.4.22.
-  version = "2.3.105403";
+  version = "2.3.106768";
 
   src = fetchurl {
     url = "https://lf-cdn.trae.com.cn/obj/trae-com-cn/pkg/app/releases/stable/${finalAttrs.version}/linux/TRAE_CN-linux-x64.deb";
-    hash = "sha256-LSBz+rcHU7oKSzvyaLqKHr+To/rxQsKPNETB5UgXrmg=";
+    hash = "sha256-I/Aty3/AScoV2b56PljuPMmOxwqZBAlTm5UoiCMeP28=";
   };
 
   nativeBuildInputs = [

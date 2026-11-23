@@ -24,11 +24,11 @@
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "claude-cage";
-  version = "0.1.8";
+  version = "0.2.0";
 
   src = fetchurl {
     url = "https://github.com/Lee-xeo/Claude-Cage/releases/download/v${finalAttrs.version}/Cage-${finalAttrs.version}-linux-amd64.deb";
-    hash = "sha256-fraLAN2Uwmw7KzQIwz0eBH6voIoQu2yoyFEYiWNF4Bg=";
+    hash = "sha256-8UiPtCp9t+5BYLe1oRAZVKgMnqhgtyigpDUQUHcdU1A=";
   };
 
   nativeBuildInputs = [
