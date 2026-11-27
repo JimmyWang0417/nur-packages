@@ -40,11 +40,11 @@
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "qoder-cn";
-  version = "0.5.20";
+  version = "0.5.21";
 
   src = fetchurl {
     url = "https://qoder-app.oss-cn-beijing.aliyuncs.com/qoder-app/releases/${finalAttrs.version}/Qoder-CN-linux-amd64.deb";
-    hash = "sha256-rF49uLWtjDrg74RJ8fAw02YLWr73SX1xZqoBGIuCWg8=";
+    hash = "sha256-EqZ+EGlOkciKcbUGGut5Nuq3uATvrTdP/LqqOpOeXqI=";
   };
 
   nativeBuildInputs = [
