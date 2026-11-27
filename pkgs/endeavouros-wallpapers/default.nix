@@ -7,7 +7,7 @@
 }:
 stdenvNoCC.mkDerivation {
   pname = "endeavouros-wallpapers";
-  version = "0-unstable-2026-11-16";
+  version = "0-unstable-2026-11-26";
 
   # Default branch of the official EndeavourOS branding repository.
   # endeavouros-branding installs these PNGs, and eos-settings-plasma
@@ -15,8 +15,8 @@ stdenvNoCC.mkDerivation {
   src = fetchFromGitHub {
     owner = "endeavouros-team";
     repo = "Branding";
-    rev = "8658d2e5333383bcc60df0ba9f16aa954899cb6a";
-    hash = "sha256-/gcQCl/52Gd6h75/3UK6Q/FgL9qpMQ+3a9pSfFlbr9Y=";
+    rev = "3466f624ec4a13ccf8d613a087ec73d5b2051f98";
+    hash = "sha256-3r5RT1dpohDpXsiNiUMaO5Bez6XOpt0V9N8clyZfdyc=";
   };
 
   nativeBuildInputs = [
